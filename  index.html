@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contagem regressiva ❤</title>
+<style>
+  :root { color-scheme: dark; box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { height: 100%; margin: 0; background: #000; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 16px; overflow: hidden; }
+  .heart { width: min(46vw, 220px); height: auto; filter: drop-shadow(0 0 24px rgba(255, 0, 40, .65)); animation: beat 1.2s infinite ease-in-out; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.14); } 30% { transform: scale(1); } 45% { transform: scale(1.1); } 60% { transform: scale(1); } }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 3vw, 24px); width: min(94vw, 640px); }
+  .box { text-align: center; }
+  .num { font-size: clamp(32px, 11vw, 72px); font-weight: 700; color: #ff1f3d; font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(255, 31, 61, .5); line-height: 1; }
+  .lbl { margin-top: 8px; font-size: clamp(10px, 3vw, 14px); letter-spacing: .18em; text-transform: uppercase; color: #8a8a8a; }
+  .msg { font-size: clamp(14px, 4vw, 18px); color: #b0b0b0; letter-spacing: .08em; text-align: center; }
+  .done { font-size: clamp(28px, 9vw, 56px); color: #ff1f3d; font-weight: 700; text-align: center; text-shadow: 0 0 18px rgba(255, 31, 61, .5); }
+  @media (prefers-reduced-motion: reduce) { .heart { animation: none; } }
+</style>
+</head>
+<body>
+  <svg class="heart" viewBox="0 0 32 29" aria-hidden="true">
+    <path fill="#ff1f3d" d="M23.6 0c-2.9 0-5.4 1.5-7.6 4.2C13.8 1.5 11.3 0 8.4 0 3.8 0 0 3.8 0 8.5c0 3 1.4 5.6 3.4 7.9C6.6 20 12 24.2 15 28.2c.4.5 1.2.5 1.6 0 3-4 8.4-8.2 11.6-11.8 2-2.3 3.4-4.9 3.4-7.9C31.6 3.8 28.2 0 23.6 0z"/>
+  </svg>
+
+  <div class="msg" id="msg">Faltam apenas</div>
+
+  <div class="grid" id="grid">
+    <div class="box"><div class="num" id="d">0</div><div class="lbl">dias</div></div>
+    <div class="box"><div class="num" id="h">00</div><div class="lbl">horas</div></div>
+    <div class="box"><div class="num" id="m">00</div><div class="lbl">minutos</div></div>
+    <div class="box"><div class="num" id="s">00</div><div class="lbl">segundos</div></div>
+  </div>
+
+  <div class="done" id="done" style="display:none">É hoje! ❤</div>
+
+<script>
+  function targetDate() {
+    var now = new Date();
+    var t = new Date(now.getFullYear(), 10, 7, 0, 0, 0);
+    var endOfDay = new Date(now.getFullYear(), 10, 8, 0, 0, 0);
+    if (now >= endOfDay) t = new Date(now.getFullYear() + 1, 10, 7, 0, 0, 0);
+    return t;
+  }
+  var target = targetDate();
+  var el = {
+    d: document.getElementById("d"), h: document.getElementById("h"),
+    m: document.getElementById("m"), s: document.getElementById("s"),
+    grid: document.getElementById("grid"), msg: document.getElementById("msg"),
+    done: document.getElementById("done")
+  };
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function tick() {
+    var diff = target - new Date();
+    if (diff <= 0) {
+      el.grid.style.display = "none";
+      el.msg.style.display = "none";
+      el.done.style.display = "block";
+      return;
+    }
+    var total = Math.floor(diff / 1000);
+    el.d.textContent = Math.floor(total / 86400);
+    el.h.textContent = pad(Math.floor((total % 86400) / 3600));
+    el.m.textContent = pad(Math.floor((total % 3600) / 60));
+    el.s.textContent = pad(total % 60);
+  }
+  tick();
+  setInterval(tick, 250);
+</script>
+</body>
+</html>
